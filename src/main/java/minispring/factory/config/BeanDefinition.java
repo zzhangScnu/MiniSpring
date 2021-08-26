@@ -1,4 +1,4 @@
-package minispring.pojo;
+package minispring.factory.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,10 @@ import lombok.Data;
  * @author lihua
  * @since 2021/8/23
  */
+@SuppressWarnings("rawtypes")
 @Data
 @AllArgsConstructor
 public class BeanDefinition {
 
-    private Object bean;
+    private Class beanClass;
 }
