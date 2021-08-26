@@ -12,13 +12,13 @@ import java.util.Objects;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
 	@Override
-	public Object getBean(String name) {
+	public Object getBean(String name, Object... args) {
 		Object singletonBean = getSingleton(name);
 		if (Objects.nonNull(singletonBean)) {
 			return singletonBean;
 		}
 		BeanDefinition beanDefinition = getBeanDefinition(name);
-		return createBean(name, beanDefinition);
+		return createBean(name, beanDefinition, args);
 	}
 
 	/**
@@ -34,7 +34,8 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 	 *
 	 * @param name           bean的名字
 	 * @param beanDefinition bean定义
+	 * @param args           构造方法的参数
 	 * @return bean
 	 */
-	protected abstract Object createBean(String name, BeanDefinition beanDefinition);
+	protected abstract Object createBean(String name, BeanDefinition beanDefinition, Object[] args);
 }

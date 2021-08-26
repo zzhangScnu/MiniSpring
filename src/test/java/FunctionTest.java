@@ -1,4 +1,3 @@
-import lombok.extern.slf4j.Slf4j;
 import minispring.BeanException;
 import minispring.factory.config.BeanDefinition;
 import minispring.factory.support.DefaultListableBeanFactory;
@@ -11,7 +10,6 @@ import service.PersonService;
  * @author lihua
  * @since 2021/8/23
  */
-@Slf4j
 class FunctionTest {
 
     private static final String BEAN_NAME = "personService";
