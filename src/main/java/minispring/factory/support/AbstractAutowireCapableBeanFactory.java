@@ -1,9 +1,13 @@
 package minispring.factory.support;
 
 import minispring.BeanException;
+import minispring.PropertyValue;
+import minispring.PropertyValues;
 import minispring.factory.config.BeanDefinition;
+import minispring.factory.config.BeanReference;
 import minispring.factory.strategy.CglibSubclassingInstantiationStrategy;
 import minispring.factory.strategy.InstantiationStrategy;
+import minispring.util.ReflectionUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -20,6 +24,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Override
 	protected Object createBean(String name, BeanDefinition beanDefinition, Object[] args) {
 		Object bean = createBeanInstance(name, beanDefinition, args);
+		applyPropertyValues(bean, beanDefinition.getPropertyValues());
 		putSingleton(name, bean);
 		return bean;
 	}
@@ -42,6 +47,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				.filter(constructor -> constructor.getParameterCount() == args.length)
 				.findFirst()
 				.orElseThrow(NoSuchMethodException::new);
+	}
+
+	private void applyPropertyValues(Object bean, PropertyValues propertyValues) {
+		propertyValues.getPropertyValueList()
+				.forEach(propertyValue -> doApplyPropertyValue(bean, propertyValue));
+	}
+
+	private void doApplyPropertyValue(Object bean, PropertyValue propertyValue) {
+		String name = propertyValue.getName();
+		Object value = propertyValue.getValue();
+		if (value instanceof BeanReference) {
+			String beanName = ((BeanReference) value).getBeanName();
+			value = getBean(beanName);
+		}
+		ReflectionUtils.setValue(bean, name, value);
 	}
 
 	public InstantiationStrategy getInstantiationStrategy() {

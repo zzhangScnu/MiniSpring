@@ -2,6 +2,7 @@ package minispring.factory.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import minispring.PropertyValues;
 
 /**
  * @author lihua
@@ -13,4 +14,11 @@ import lombok.Data;
 public class BeanDefinition {
 
     private Class beanClass;
+
+    private PropertyValues propertyValues;
+
+    public BeanDefinition(Class beanClass) {
+        this.beanClass = beanClass;
+        propertyValues = new PropertyValues();
+    }
 }
