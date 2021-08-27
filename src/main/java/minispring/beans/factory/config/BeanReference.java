@@ -1,4 +1,4 @@
-package minispring;
+package minispring.beans.factory.config;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Data
 @RequiredArgsConstructor
-public class PropertyValue {
+public class BeanReference {
 
-    private final String name;
-
-    private final Object value;
+    private final String beanName;
 }

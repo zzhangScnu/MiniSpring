@@ -1,6 +1,6 @@
 package minispring.util;
 
-import minispring.BeanException;
+import minispring.beans.BeanException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

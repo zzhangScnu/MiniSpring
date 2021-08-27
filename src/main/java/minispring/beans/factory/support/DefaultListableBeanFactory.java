@@ -1,7 +1,7 @@
-package minispring.factory.support;
+package minispring.beans.factory.support;
 
-import minispring.BeanException;
-import minispring.factory.config.BeanDefinition;
+import minispring.beans.BeanException;
+import minispring.beans.factory.config.BeanDefinition;
 
 import java.util.Map;
 import java.util.Optional;

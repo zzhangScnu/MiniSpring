@@ -1,6 +1,6 @@
-package minispring.factory.support;
+package minispring.beans.factory.support;
 
-import minispring.factory.config.SingletonBeanRegistry;
+import minispring.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

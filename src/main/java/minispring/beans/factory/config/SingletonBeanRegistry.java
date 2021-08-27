@@ -1,4 +1,4 @@
-package minispring.factory.config;
+package minispring.beans.factory.config;
 
 /**
  * @author lihua

@@ -1,9 +1,9 @@
-import minispring.BeanException;
-import minispring.PropertyValue;
-import minispring.PropertyValues;
-import minispring.factory.config.BeanDefinition;
-import minispring.factory.strategy.SimpleInstantiationStrategy;
-import minispring.factory.support.DefaultListableBeanFactory;
+import minispring.beans.BeanException;
+import minispring.beans.PropertyValue;
+import minispring.beans.PropertyValues;
+import minispring.beans.factory.config.BeanDefinition;
+import minispring.beans.factory.strategy.SimpleInstantiationStrategy;
+import minispring.beans.factory.support.DefaultListableBeanFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

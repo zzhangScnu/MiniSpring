@@ -1,6 +1,6 @@
-package minispring.factory.strategy;
+package minispring.beans.factory.strategy;
 
-import minispring.factory.config.BeanDefinition;
+import minispring.beans.factory.config.BeanDefinition;
 
 import java.lang.reflect.Constructor;
 

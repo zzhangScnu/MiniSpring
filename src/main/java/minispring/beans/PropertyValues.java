@@ -1,4 +1,4 @@
-package minispring;
+package minispring.beans;
 
 import lombok.Data;
 

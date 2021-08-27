@@ -1,6 +1,6 @@
-package minispring.factory.support;
+package minispring.beans.factory.support;
 
-import minispring.factory.config.BeanDefinition;
+import minispring.beans.factory.config.BeanDefinition;
 
 /**
  * @author lihua

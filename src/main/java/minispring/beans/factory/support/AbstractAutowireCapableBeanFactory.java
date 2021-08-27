@@ -1,12 +1,12 @@
-package minispring.factory.support;
+package minispring.beans.factory.support;
 
-import minispring.BeanException;
-import minispring.PropertyValue;
-import minispring.PropertyValues;
-import minispring.factory.config.BeanDefinition;
-import minispring.factory.config.BeanReference;
-import minispring.factory.strategy.CglibSubclassingInstantiationStrategy;
-import minispring.factory.strategy.InstantiationStrategy;
+import minispring.beans.BeanException;
+import minispring.beans.PropertyValue;
+import minispring.beans.PropertyValues;
+import minispring.beans.factory.config.BeanDefinition;
+import minispring.beans.factory.config.BeanReference;
+import minispring.beans.factory.strategy.CglibSubclassingInstantiationStrategy;
+import minispring.beans.factory.strategy.InstantiationStrategy;
 import minispring.util.ReflectionUtils;
 
 import java.lang.reflect.Constructor;

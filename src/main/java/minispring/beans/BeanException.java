@@ -1,4 +1,4 @@
-package minispring;
+package minispring.beans;
 
 /**
  * @author lihua

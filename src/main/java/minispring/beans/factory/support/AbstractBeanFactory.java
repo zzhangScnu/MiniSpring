@@ -1,7 +1,7 @@
-package minispring.factory.support;
+package minispring.beans.factory.support;
 
-import minispring.factory.BeanFactory;
-import minispring.factory.config.BeanDefinition;
+import minispring.beans.factory.BeanFactory;
+import minispring.beans.factory.config.BeanDefinition;
 
 import java.util.Objects;
 

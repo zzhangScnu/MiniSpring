@@ -1,8 +1,8 @@
-package minispring.factory.config;
+package minispring.beans.factory.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import minispring.PropertyValues;
+import minispring.beans.PropertyValues;
 
 /**
  * @author lihua

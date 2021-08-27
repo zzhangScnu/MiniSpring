@@ -1,7 +1,7 @@
-package minispring.factory.strategy;
+package minispring.beans.factory.strategy;
 
-import minispring.BeanException;
-import minispring.factory.config.BeanDefinition;
+import minispring.beans.BeanException;
+import minispring.beans.factory.config.BeanDefinition;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
