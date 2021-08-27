@@ -13,5 +13,8 @@ public class PropertyValue {
 
     private final String name;
 
+    /**
+     * 普通的值，或是BeanReference
+     */
     private final Object value;
 }

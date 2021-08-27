@@ -21,7 +21,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 			}
 			return constructor.newInstance(args);
 		} catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
-			throw new BeanException("create bean failed: ", e);
-		}
+            throw new BeanException("create bean failed: ", e);
+        }
 	}
 }

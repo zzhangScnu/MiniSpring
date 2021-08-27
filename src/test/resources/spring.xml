@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="personDao" class="minispring.bean.PersonDao"/>
+    <bean id="personService" class="minispring.bean.PersonService">
+        <property name="name" value="喵喵"/>
+        <property name="personDao" ref="personDao"/>
+    </bean>
+</beans>

@@ -34,8 +34,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			Constructor constructor = getConstructor(beanDefinition, args);
 			return getInstantiationStrategy().instantiate(beanDefinition, constructor, args);
 		} catch (NoSuchMethodException e) {
-			throw new BeanException(String.format("get declared constructor of bean %s failed", name));
-		}
+            throw new BeanException(String.format("get declared constructor of bean %s failed", name));
+        }
 	}
 
 	private Constructor getConstructor(BeanDefinition beanDefinition, Object[] args) throws NoSuchMethodException {
