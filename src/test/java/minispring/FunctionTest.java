@@ -10,6 +10,7 @@ import minispring.beans.factory.config.BeanReference;
 import minispring.beans.factory.strategy.SimpleInstantiationStrategy;
 import minispring.beans.factory.support.DefaultListableBeanFactory;
 import minispring.beans.factory.xml.XmlBeanDefinitionReader;
+import minispring.context.support.ClassPathXmlApplicationContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,8 @@ class FunctionTest {
     private static final String PERSON_NAME = "喵喵";
 
     private static final Integer PERSON_GENDER = 0;
+
+    private static final String CONFIG_LOCATION = "classpath:spring.xml";
 
     @Test
     @DisplayName("容器类功能-不存在bean定义")
@@ -98,10 +101,21 @@ class FunctionTest {
     void testStep6() {
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
-        beanDefinitionReader.loadBeanDefinitions("classpath:spring.xml");
+        beanDefinitionReader.loadBeanDefinitions(CONFIG_LOCATION);
         Object bean = beanFactory.getBean(SERVICE_NAME);
         Assertions.assertNotNull(bean);
         Integer gender = ((PersonService) bean).queryGenderByName(PERSON_NAME);
         Assertions.assertEquals(PERSON_GENDER, gender);
+    }
+
+    @Test
+    @DisplayName("applicationContext和postProcessor")
+    void testStep7() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+        applicationContext.refresh();
+        Object bean = applicationContext.getBean(SERVICE_NAME);
+        Assertions.assertNotNull(bean);
+        Assertions.assertEquals("张喵喵", ((PersonService) bean).getName());
+        Assertions.assertEquals(1, ((PersonService) bean).getGender());
     }
 }

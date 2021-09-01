@@ -12,4 +12,11 @@ public interface BeanDefinitionReader {
      * @param location 位置信息
      */
     void loadBeanDefinitions(String location);
+
+    /**
+     * 从多个配置文件中加载bean定义
+     *
+     * @param locations 多个位置信息
+     */
+    void loadBeanDefinitions(String... locations);
 }

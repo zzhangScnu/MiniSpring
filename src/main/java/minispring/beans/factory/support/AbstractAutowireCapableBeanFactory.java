@@ -3,7 +3,9 @@ package minispring.beans.factory.support;
 import minispring.beans.BeanException;
 import minispring.beans.PropertyValue;
 import minispring.beans.PropertyValues;
+import minispring.beans.factory.config.AutowireCapableBeanFactory;
 import minispring.beans.factory.config.BeanDefinition;
+import minispring.beans.factory.config.BeanPostProcessor;
 import minispring.beans.factory.config.BeanReference;
 import minispring.beans.factory.strategy.CglibSubclassingInstantiationStrategy;
 import minispring.beans.factory.strategy.InstantiationStrategy;
@@ -11,13 +13,15 @@ import minispring.util.ReflectionUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author lihua
  * @since 2021/8/26
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory {
+public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory {
 
 	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
@@ -25,6 +29,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object createBean(String name, BeanDefinition beanDefinition, Object[] args) {
 		Object bean = createBeanInstance(name, beanDefinition, args);
 		applyPropertyValues(bean, beanDefinition.getPropertyValues());
+		bean = initializeBean(name, bean);
 		putSingleton(name, bean);
 		return bean;
 	}
@@ -70,5 +75,30 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
 		this.instantiationStrategy = instantiationStrategy;
+	}
+
+	private Object initializeBean(String name, Object bean) {
+		Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, name);
+		return applyBeanPostProcessorsAfterInitialization(wrappedBean, name);
+	}
+
+	@Override
+	public Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String beanName) throws BeanException {
+		List<BeanPostProcessor> beanPostProcessors = getBeanPostProcessors();
+		for (BeanPostProcessor beanPostProcessor : beanPostProcessors) {
+			Object beanAfterProcess = beanPostProcessor.postProcessBeforeInitialization(existingBean, beanName);
+			existingBean = Optional.ofNullable(beanAfterProcess).orElse(existingBean);
+		}
+		return existingBean;
+	}
+
+	@Override
+	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName) throws BeanException {
+		List<BeanPostProcessor> beanPostProcessors = getBeanPostProcessors();
+		for (BeanPostProcessor beanPostProcessor : beanPostProcessors) {
+			Object beanAfterProcess = beanPostProcessor.postProcessAfterInitialization(existingBean, beanName);
+			existingBean = Optional.ofNullable(beanAfterProcess).orElse(existingBean);
+		}
+		return existingBean;
 	}
 }

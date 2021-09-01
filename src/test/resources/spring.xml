@@ -5,4 +5,6 @@
         <property name="name" value="喵喵"/>
         <property name="personDao" ref="personDao"/>
     </bean>
+    <bean id="myBeanFactoryPostProcessor" class="minispring.bean.MyBeanFactoryPostProcessor"/>
+    <bean id="myBeanPostProcessor" class="minispring.bean.MyBeanPostProcessor"/>
 </beans>

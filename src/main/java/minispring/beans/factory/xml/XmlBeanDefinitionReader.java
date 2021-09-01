@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -51,6 +52,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         // 通过getter去引用父类的private属性对象
         Resource resource = getResourceLoader().getResource(location);
         loadBeanDefinitions(resource);
+    }
+
+    @Override
+    public void loadBeanDefinitions(String... locations) {
+        Arrays.stream(locations)
+                .forEach(this::loadBeanDefinitions);
     }
 
     private void loadBeanDefinitions(Resource resource) {

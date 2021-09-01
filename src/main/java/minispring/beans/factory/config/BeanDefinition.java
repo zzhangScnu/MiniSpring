@@ -8,7 +8,7 @@ import minispring.beans.PropertyValues;
  * @author lihua
  * @since 2021/8/23
  */
-@SuppressWarnings("rawtypes")
+@SuppressWarnings({"rawtypes", "unchecked"})
 @Data
 @AllArgsConstructor
 public class BeanDefinition {
@@ -20,5 +20,9 @@ public class BeanDefinition {
     public BeanDefinition(Class beanClass) {
         this.beanClass = beanClass;
         propertyValues = new PropertyValues();
+    }
+
+    public boolean isAssignableFrom(Class receivedClass) {
+        return receivedClass.isAssignableFrom(beanClass);
     }
 }
