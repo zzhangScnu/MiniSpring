@@ -112,10 +112,27 @@ class FunctionTest {
     @DisplayName("applicationContext和postProcessor")
     void testStep7() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
-        applicationContext.refresh();
         Object bean = applicationContext.getBean(SERVICE_NAME);
         Assertions.assertNotNull(bean);
+        // postProcessors改变了属性
         Assertions.assertEquals("张喵喵", ((PersonService) bean).getName());
         Assertions.assertEquals(1, ((PersonService) bean).getGender());
+        Integer gender = ((PersonService) bean).queryGenderByName(PERSON_NAME);
+        Assertions.assertEquals(PERSON_GENDER, gender);
+    }
+
+    @Test
+    @DisplayName("初始化方法和销毁方法")
+    void testStep8() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+        applicationContext.registerShutdownHook();
+        Object bean = applicationContext.getBean(SERVICE_NAME);
+        Assertions.assertNotNull(bean);
+    }
+
+    @Test
+    void testHook() {
+        Assertions.assertDoesNotThrow(() ->
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close！"))));
     }
 }

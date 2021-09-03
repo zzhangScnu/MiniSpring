@@ -14,4 +14,9 @@ public interface ConfigurableBeanFactory extends BeanFactory, SingletonBeanRegis
      * @param beanPostProcessor bean实例化后处理器
      */
     void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
+
+    /**
+     * 销毁单例对象
+     */
+    void destroySingletons();
 }

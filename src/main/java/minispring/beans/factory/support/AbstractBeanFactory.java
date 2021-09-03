@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * 本类实现了ConfigurableBeanFactory接口，并继承了DefaultSingletonBeanRegistry类
+ * 其中，destroySingletons由接口定义，由父类实现
+ * ConfigurableBeanFactory和DefaultSingletonBeanRegistry并没有直接的实现关系，但是通过本类，达到了实现的效果，是一种不错的分层和隔离
+ *
  * @author lihua
  * @since 2021/8/25
  */

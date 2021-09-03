@@ -3,6 +3,8 @@ package minispring.bean;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import minispring.beans.factory.DisposableBean;
+import minispring.beans.factory.InitializingBean;
 
 /**
  * @author lihua
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonService {
+public class PersonService implements InitializingBean, DisposableBean {
 
     private String name;
 
@@ -26,5 +28,15 @@ public class PersonService {
     public PersonService(String name, Integer gender) {
         this.name = name;
         this.gender = gender;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("destroy方法被执行了！");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("afterPropertiesSet方法被执行了！");
     }
 }

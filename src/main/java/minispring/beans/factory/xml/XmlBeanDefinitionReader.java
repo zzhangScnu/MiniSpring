@@ -39,6 +39,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     private static final String REF = "ref";
 
+    private static final String INIT_METHOD = "init-method";
+
+    private static final String DESTROY_METHOD = "destroy-method";
+
     public XmlBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) {
         super(beanDefinitionRegistry);
     }
@@ -89,8 +93,16 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         String beanName = getBeanName(bean, beanClass);
         PropertyValues propertyValues = assemblePropertyValues(bean);
         BeanDefinition beanDefinition = new BeanDefinition(beanClass, propertyValues);
+        setMethodNames(bean, beanDefinition);
         checkDuplicate(beanName);
         getBeanDefinitionRegistry().registerBeanDefinition(beanName, beanDefinition);
+    }
+
+    private void setMethodNames(Element bean, BeanDefinition beanDefinition) {
+        String initMethodName = bean.getAttribute(INIT_METHOD);
+        beanDefinition.setInitMethodName(initMethodName);
+        String destroyMethodName = bean.getAttribute(DESTROY_METHOD);
+        beanDefinition.setDestroyMethodName(destroyMethodName);
     }
 
     private void checkDuplicate(String beanName) {

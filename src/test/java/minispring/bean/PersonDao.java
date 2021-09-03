@@ -9,12 +9,18 @@ import java.util.Map;
  */
 public class PersonDao {
 
-	private static final Map<String, Integer> NAME_GENDER_MAP = new HashMap<String, Integer>() {{
-		put("喵喵", 0);
-		put("牛奶", 1);
-	}};
+    private static final Map<String, Integer> NAME_GENDER_MAP = new HashMap<>();
 
-	public Integer queryGenderByName(String name) {
-		return NAME_GENDER_MAP.get(name);
-	}
+    public void initialize() {
+        NAME_GENDER_MAP.put("喵喵", 0);
+        NAME_GENDER_MAP.put("牛奶", 1);
+    }
+
+    public void destroy() {
+        NAME_GENDER_MAP.clear();
+    }
+
+    public Integer queryGenderByName(String name) {
+        return NAME_GENDER_MAP.get(name);
+    }
 }

@@ -18,6 +18,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 	@Override
 	public void refresh() throws BeanException {
 		refreshBeanFactory();
+		// 每次refresh，其实都是创建了新的容器
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		invokeBeanFactoryPostProcessors(beanFactory);
 		registerBeanPostProcessors(beanFactory);
@@ -73,5 +74,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 	@Override
 	public Object getBean(String name, Object... args) {
 		return getBeanFactory().getBean(name, args);
+	}
+
+	@Override
+	public void registerShutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+	}
+
+	@Override
+	public void close() {
+		getBeanFactory().destroySingletons();
 	}
 }
