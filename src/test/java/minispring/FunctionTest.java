@@ -122,7 +122,7 @@ class FunctionTest {
     }
 
     @Test
-    @DisplayName("初始化方法和销毁方法")
+    @DisplayName("初始化方法和销毁方法&aware注入")
     void testStep8() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
         applicationContext.registerShutdownHook();

@@ -22,6 +22,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		invokeBeanFactoryPostProcessors(beanFactory);
 		registerBeanPostProcessors(beanFactory);
+		addApplicationContextProcessor(beanFactory);
 		beanFactory.preInstantiateSingletons();
 	}
 
@@ -84,5 +85,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 	@Override
 	public void close() {
 		getBeanFactory().destroySingletons();
+	}
+
+	private void addApplicationContextProcessor(ConfigurableListableBeanFactory beanFactory) {
+		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 	}
 }

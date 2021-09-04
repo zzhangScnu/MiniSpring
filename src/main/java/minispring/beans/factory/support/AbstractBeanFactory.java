@@ -4,6 +4,7 @@ import lombok.Getter;
 import minispring.beans.factory.config.BeanDefinition;
 import minispring.beans.factory.config.BeanPostProcessor;
 import minispring.beans.factory.config.ConfigurableBeanFactory;
+import minispring.util.ClassUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.Objects;
  */
 @Getter
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+
+    private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 

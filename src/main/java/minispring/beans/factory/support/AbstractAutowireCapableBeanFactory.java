@@ -4,6 +4,9 @@ import cn.hutool.core.util.StrUtil;
 import minispring.beans.BeanException;
 import minispring.beans.PropertyValue;
 import minispring.beans.PropertyValues;
+import minispring.beans.factory.BeanClassLoaderAware;
+import minispring.beans.factory.BeanFactoryAware;
+import minispring.beans.factory.BeanNameAware;
 import minispring.beans.factory.DisposableBean;
 import minispring.beans.factory.InitializingBean;
 import minispring.beans.factory.config.AutowireCapableBeanFactory;
@@ -34,19 +37,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object createBean(String name, BeanDefinition beanDefinition, Object[] args) {
 		Object bean = createBeanInstance(name, beanDefinition, args);
 		applyPropertyValues(bean, beanDefinition.getPropertyValues());
+		setAware(name, bean);
 		bean = initializeBean(name, bean, beanDefinition);
 		putSingleton(name, bean);
 		registerDisposableBeanIfNecessary(name, bean, beanDefinition);
 		return bean;
 	}
 
+	/**
+	 * bean实例化
+	 */
 	private Object createBeanInstance(String name, BeanDefinition beanDefinition, Object[] args) {
 		try {
 			Constructor constructor = getConstructor(beanDefinition, args);
 			return getInstantiationStrategy().instantiate(beanDefinition, constructor, args);
 		} catch (NoSuchMethodException e) {
-            throw new BeanException(String.format("get declared constructor of bean %s failed", name));
-        }
+			throw new BeanException(String.format("get declared constructor of bean %s failed", name));
+		}
 	}
 
 	private Constructor getConstructor(BeanDefinition beanDefinition, Object[] args) throws NoSuchMethodException {
@@ -60,6 +67,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				.orElseThrow(NoSuchMethodException::new);
 	}
 
+	/**
+	 * 注入属性
+	 */
 	private void applyPropertyValues(Object bean, PropertyValues propertyValues) {
 		propertyValues.getPropertyValueList()
 				.forEach(propertyValue -> doApplyPropertyValue(bean, propertyValue));
@@ -83,6 +93,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		this.instantiationStrategy = instantiationStrategy;
 	}
 
+	/**
+	 * 执行初始化方法
+	 */
 	private Object initializeBean(String name, Object bean, BeanDefinition beanDefinition) {
 		Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, name);
 		invokeInitMethods(name, bean, beanDefinition);
@@ -132,9 +145,27 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return existingBean;
 	}
 
+	/**
+	 * 向虚拟机注册钩子，在容器关闭时销毁实例
+	 */
 	private void registerDisposableBeanIfNecessary(String name, Object bean, BeanDefinition beanDefinition) {
 		if (bean instanceof DisposableBean || StrUtil.isNotBlank(beanDefinition.getDestroyMethodName())) {
 			registerDisposableBean(name, bean, beanDefinition.getDestroyMethodName());
+		}
+	}
+
+	/**
+	 * 实现了接口的对象，拥有感知能力
+	 */
+	private void setAware(String name, Object bean) {
+		if (bean instanceof BeanNameAware) {
+			((BeanNameAware) bean).setBeanName(name);
+		}
+		if (bean instanceof BeanClassLoaderAware) {
+			((BeanClassLoaderAware) bean).setClassLoader(getClassLoader());
+		}
+		if (bean instanceof BeanFactoryAware) {
+			((BeanFactoryAware) bean).setBeanFactory(this);
 		}
 	}
 }
