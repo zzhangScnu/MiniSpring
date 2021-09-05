@@ -43,6 +43,8 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     private static final String DESTROY_METHOD = "destroy-method";
 
+    private static final String SCOPE = "scope";
+
     public XmlBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) {
         super(beanDefinitionRegistry);
     }
@@ -94,6 +96,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         PropertyValues propertyValues = assemblePropertyValues(bean);
         BeanDefinition beanDefinition = new BeanDefinition(beanClass, propertyValues);
         setMethodNames(bean, beanDefinition);
+        beanDefinition.setScope(bean.getAttribute(SCOPE));
         checkDuplicate(beanName);
         getBeanDefinitionRegistry().registerBeanDefinition(beanName, beanDefinition);
     }

@@ -1,6 +1,7 @@
 package minispring.beans.factory.support;
 
 import minispring.beans.BeanException;
+import minispring.beans.factory.config.BeanDefinition;
 import minispring.beans.factory.config.SingletonBeanRegistry;
 
 import java.util.Map;
@@ -24,8 +25,10 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     /**
      * 注册单例bean实例
      */
-    protected void putSingleton(String name, Object bean) {
-        singletonMap.put(name, bean);
+    protected void putSingleton(String name, Object bean, BeanDefinition beanDefinition) {
+        if (beanDefinition.isSingleton()) {
+            singletonMap.put(name, bean);
+        }
     }
 
     public void registerDisposableBean(String name, Object bean, String destroyMethodName) {

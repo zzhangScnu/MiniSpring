@@ -131,6 +131,19 @@ class FunctionTest {
     }
 
     @Test
+    @DisplayName("对象作用域-prototype")
+    void testStep9() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+        applicationContext.registerShutdownHook();
+        Object bean = applicationContext.getBean(DAO_NAME);
+        Assertions.assertNotNull(bean);
+        System.out.println("第一个获取的bean的hashCode是： " + bean.hashCode());
+        Object newBean = applicationContext.getBean(DAO_NAME);
+        Assertions.assertNotEquals(bean, newBean);
+        System.out.println("第二个获取的bean的hashCode是： " + newBean.hashCode());
+    }
+
+    @Test
     void testHook() {
         Assertions.assertDoesNotThrow(() ->
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close！"))));

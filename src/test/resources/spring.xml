@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
-    <bean id="personDao" class="minispring.bean.PersonDao" init-method="initialize" destroy-method="destroy"/>
+    <bean id="personDao" class="minispring.bean.PersonDao" init-method="initialize" destroy-method="destroy"
+          scope="prototype"/>
     <bean id="personService" class="minispring.bean.PersonService">
         <property name="name" value="喵喵"/>
         <property name="personDao" ref="personDao"/>

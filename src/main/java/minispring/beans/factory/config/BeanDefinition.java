@@ -1,5 +1,6 @@
 package minispring.beans.factory.config;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import minispring.beans.PropertyValues;
 
@@ -13,6 +14,10 @@ import minispring.beans.PropertyValues;
 @Data
 public class BeanDefinition {
 
+    public static final String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
+
+    public static final String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+
     private Class beanClass;
 
     private PropertyValues propertyValues;
@@ -23,6 +28,12 @@ public class BeanDefinition {
     private String initMethodName;
 
     private String destroyMethodName;
+
+    private String scope;
+
+    private boolean singleton = true;
+
+    private boolean prototype = false;
 
     public BeanDefinition(Class beanClass) {
         this.beanClass = beanClass;
@@ -36,5 +47,15 @@ public class BeanDefinition {
 
     public boolean isAssignableFrom(Class receivedClass) {
         return receivedClass.isAssignableFrom(beanClass);
+    }
+
+    public void setScope(String scope) {
+        // 如果不设置，就保持默认值-singleton
+        if (StrUtil.isBlank(scope)) {
+            return;
+        }
+        this.scope = scope;
+        this.singleton = SCOPE_SINGLETON.equals(scope);
+        this.prototype = SCOPE_PROTOTYPE.equals(scope);
     }
 }
