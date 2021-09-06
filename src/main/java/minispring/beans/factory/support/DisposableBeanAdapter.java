@@ -30,8 +30,7 @@ public class DisposableBeanAdapter {
         if (isXmlConfigDestroy()) {
             Method method = bean.getClass().getMethod(destroyMethodName);
             if (Objects.isNull(method)) {
-                throw new BeanException(String.format("Couldn't find a destroy method named '%s' on bean with name '%s'",
-                        destroyMethodName, name));
+                throw new BeanException("Couldn't find a destroy method named '%s' on bean with name '%s'", destroyMethodName, name);
             }
             method.invoke(bean);
         }

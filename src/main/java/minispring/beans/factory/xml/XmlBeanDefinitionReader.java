@@ -110,7 +110,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     private void checkDuplicate(String beanName) {
         if (getBeanDefinitionRegistry().containsBeanDefinition(beanName)) {
-            throw new BeanException("Duplicate beanName[" + beanName + "] is not allowed");
+            throw new BeanException("Duplicate beanName[%s] is not allowed", beanName);
         }
     }
 

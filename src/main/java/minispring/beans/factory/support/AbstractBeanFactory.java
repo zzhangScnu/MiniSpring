@@ -1,6 +1,7 @@
 package minispring.beans.factory.support;
 
 import lombok.Getter;
+import minispring.beans.factory.FactoryBean;
 import minispring.beans.factory.config.BeanDefinition;
 import minispring.beans.factory.config.BeanPostProcessor;
 import minispring.beans.factory.config.ConfigurableBeanFactory;
@@ -19,7 +20,7 @@ import java.util.Objects;
  * @since 2021/8/25
  */
 @Getter
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
     private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 
@@ -29,10 +30,18 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     public Object getBean(String name, Object... args) {
         Object singletonBean = getSingleton(name);
         if (Objects.nonNull(singletonBean)) {
-            return singletonBean;
+            return getObjectForBeanInstance(name, singletonBean);
         }
         BeanDefinition beanDefinition = getBeanDefinition(name);
-        return createBean(name, beanDefinition, args);
+        Object bean = createBean(name, beanDefinition, args);
+        return getObjectForBeanInstance(name, bean);
+    }
+
+    private Object getObjectForBeanInstance(String name, Object bean) {
+        if (!(bean instanceof FactoryBean)) {
+            return bean;
+        }
+        return getObjectFromFactoryBean(name, (FactoryBean<?>) bean);
     }
 
     /**

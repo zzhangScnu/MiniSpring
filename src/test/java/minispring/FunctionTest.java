@@ -1,5 +1,6 @@
 package minispring;
 
+import minispring.bean.NeoPersonService;
 import minispring.bean.PersonDao;
 import minispring.bean.PersonService;
 import minispring.beans.BeanException;
@@ -147,5 +148,16 @@ class FunctionTest {
     void testHook() {
         Assertions.assertDoesNotThrow(() ->
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> System.out.println("close！"))));
+    }
+
+    @Test
+    @DisplayName("FactoryBean")
+    void testStep10() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-factory-bean.xml");
+        applicationContext.registerShutdownHook();
+        NeoPersonService personService = (NeoPersonService) applicationContext.getBean(SERVICE_NAME);
+        Assertions.assertNotNull(personService);
+        Integer gender = personService.queryGenderByName(PERSON_NAME);
+        Assertions.assertEquals(PERSON_GENDER, gender);
     }
 }

@@ -6,11 +6,11 @@ package minispring.beans;
  */
 public class BeanException extends RuntimeException {
 
-	public BeanException(String message) {
-		super(message);
+	public BeanException(String message, Object... args) {
+		super(String.format(message, args));
 	}
 
-	public BeanException(String message, Throwable cause) {
-		super(message, cause);
+	public BeanException(String message, Throwable cause, Object... args) {
+		super(String.format(message, args), cause);
 	}
 }
