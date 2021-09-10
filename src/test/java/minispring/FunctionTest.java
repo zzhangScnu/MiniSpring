@@ -12,6 +12,7 @@ import minispring.beans.factory.strategy.SimpleInstantiationStrategy;
 import minispring.beans.factory.support.DefaultListableBeanFactory;
 import minispring.beans.factory.xml.XmlBeanDefinitionReader;
 import minispring.context.support.ClassPathXmlApplicationContext;
+import minispring.listener.CustomizedEvent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,11 @@ class FunctionTest {
         getAndCompareBean(beanFactory);
     }
 
+    /**
+     * 使用到的构造方法：
+     *
+     * @see PersonService#PersonService(java.lang.String, java.lang.Integer)
+     */
     @Test
     @DisplayName("有参构造方法")
     void testStep4() {
@@ -85,7 +91,7 @@ class FunctionTest {
         PersonService newPersonService = (PersonService) beanFactory.getBean(SERVICE_NAME);
         Assertions.assertNotNull(newPersonService);
         Assertions.assertEquals(PERSON_NAME, newPersonService.getName());
-        Integer gender = newPersonService.queryGenderByName(PERSON_NAME);
+        Integer gender = newPersonService.getGender();
         Assertions.assertEquals(PERSON_GENDER, gender);
     }
 
@@ -159,5 +165,14 @@ class FunctionTest {
         Assertions.assertNotNull(personService);
         Integer gender = personService.queryGenderByName(PERSON_NAME);
         Assertions.assertEquals(PERSON_GENDER, gender);
+    }
+
+    @Test
+    @DisplayName("事件发布和监听")
+    void testStep11() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-listener.xml");
+        Assertions.assertNotNull(applicationContext);
+        applicationContext.registerShutdownHook();
+        applicationContext.publishEvent(new CustomizedEvent(applicationContext, "你好~"));
     }
 }

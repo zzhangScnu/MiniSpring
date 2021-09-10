@@ -4,7 +4,13 @@ import minispring.beans.BeanException;
 import minispring.beans.factory.ConfigurableListableBeanFactory;
 import minispring.beans.factory.config.BeanFactoryPostProcessor;
 import minispring.beans.factory.config.BeanPostProcessor;
+import minispring.context.ApplicationEvent;
+import minispring.context.ApplicationListener;
 import minispring.context.ConfigurableApplicationContext;
+import minispring.context.event.ApplicationEventMulticaster;
+import minispring.context.event.ContextClosedEvent;
+import minispring.context.event.ContextRefreshedEvent;
+import minispring.context.event.SimpleApplicationEventMulticaster;
 import minispring.core.io.loader.DefaultResourceLoader;
 
 import java.util.Map;
@@ -15,6 +21,10 @@ import java.util.Map;
  */
 public abstract class AbstractApplicationContext extends DefaultResourceLoader implements ConfigurableApplicationContext {
 
+	public static final String APPLICATION_EVENT_MULTICASTER_BEAN_NAME = "applicationEventMulticaster";
+
+	private ApplicationEventMulticaster applicationEventMulticaster;
+
 	@Override
 	public void refresh() throws BeanException {
 		refreshBeanFactory();
@@ -23,7 +33,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 		invokeBeanFactoryPostProcessors(beanFactory);
 		registerBeanPostProcessors(beanFactory);
 		addApplicationContextProcessor(beanFactory);
+		initApplicationEventMulticaster();
+		registerListeners();
 		beanFactory.preInstantiateSingletons();
+		publishEvent();
 	}
 
 	/**
@@ -84,10 +97,41 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 
 	@Override
 	public void close() {
+		ContextClosedEvent contextClosedEvent = new ContextClosedEvent(this);
+		applicationEventMulticaster.multicasterEvent(contextClosedEvent);
 		getBeanFactory().destroySingletons();
 	}
 
 	private void addApplicationContextProcessor(ConfigurableListableBeanFactory beanFactory) {
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+	}
+
+	/**
+	 * 初始化事件广播者
+	 */
+	private void initApplicationEventMulticaster() {
+		applicationEventMulticaster = new SimpleApplicationEventMulticaster();
+		getBeanFactory().registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, applicationEventMulticaster);
+	}
+
+	/**
+	 * 注册事件监听器
+	 */
+	private void registerListeners() {
+		getBeansOfType(ApplicationListener.class).values()
+				.forEach(applicationEventMulticaster::addApplicationListener);
+	}
+
+	/**
+	 * 发布容器刷新事件
+	 */
+	private void publishEvent() {
+		ContextRefreshedEvent contextRefreshedEvent = new ContextRefreshedEvent(this);
+		applicationEventMulticaster.multicasterEvent(contextRefreshedEvent);
+	}
+
+	@Override
+	public void publishEvent(ApplicationEvent applicationEvent) {
+		applicationEventMulticaster.multicasterEvent(applicationEvent);
 	}
 }

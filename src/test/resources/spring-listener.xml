@@ -1,0 +1,5 @@
+<beans>
+    <bean id="contextClosedEventListener" class="minispring.listener.ContextClosedEventListener"/>
+    <bean id="contextRefreshedEventListener" class="minispring.listener.ContextRefreshedEventListener"/>
+    <bean id="customizedEventListener" class="minispring.listener.CustomizedEventListener"/>
+</beans>

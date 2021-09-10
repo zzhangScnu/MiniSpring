@@ -10,6 +10,8 @@ public class ClassUtils {
 		throw new UnsupportedOperationException("Utility class!");
 	}
 
+	public static final String CGLIB_CLASS_SEPARATOR = "$$";
+
 	/**
 	 * 直接从spring framework拷过来的，获取默认的类加载器
 	 *
@@ -35,5 +37,25 @@ public class ClassUtils {
 			}
 		}
 		return cl;
+	}
+
+	/**
+	 * Check whether the specified class is a CGLIB-generated class.
+	 *
+	 * @param clazz the class to check
+	 * @return 判断结果
+	 */
+	public static boolean isCglibProxyClass(Class<?> clazz) {
+		return (clazz != null && isCglibProxyClassName(clazz.getName()));
+	}
+
+	/**
+	 * Check whether the specified class name is a CGLIB-generated class.
+	 *
+	 * @param className the class name to check
+	 * @return 判断结果
+	 */
+	public static boolean isCglibProxyClassName(String className) {
+		return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));
 	}
 }

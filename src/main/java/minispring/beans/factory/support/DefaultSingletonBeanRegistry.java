@@ -27,21 +27,26 @@ public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
 		return singletonMap.get(name);
 	}
 
-    /**
-     * 注册单例bean实例
-     */
-    protected void putSingleton(String name, Object bean, BeanDefinition beanDefinition) {
-        if (beanDefinition.isSingleton()) {
-            singletonMap.put(name, bean);
-        }
-    }
+	/**
+	 * 注册单例bean实例
+	 */
+	protected void putSingleton(String name, Object bean, BeanDefinition beanDefinition) {
+		if (beanDefinition.isSingleton()) {
+			registerSingleton(name, bean);
+		}
+	}
 
-    public void registerDisposableBean(String name, Object bean, String destroyMethodName) {
-        DisposableBeanAdapter disposableBeanAdapter = new DisposableBeanAdapter(name, bean, destroyMethodName);
-        disposableBeanMap.put(name, disposableBeanAdapter);
-    }
+	@Override
+	public void registerSingleton(String name, Object singletonObject) {
+		singletonMap.put(name, singletonObject);
+	}
 
-    public void destroySingletons() {
+	public void registerDisposableBean(String name, Object bean, String destroyMethodName) {
+		DisposableBeanAdapter disposableBeanAdapter = new DisposableBeanAdapter(name, bean, destroyMethodName);
+		disposableBeanMap.put(name, disposableBeanAdapter);
+	}
+
+	public void destroySingletons() {
 		disposableBeanMap.forEach(this::doDestroySingletons);
 	}
 

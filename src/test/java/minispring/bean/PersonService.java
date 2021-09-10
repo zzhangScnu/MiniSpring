@@ -23,25 +23,30 @@ import minispring.context.ApplicationContextAware;
 public class PersonService implements InitializingBean, DisposableBean,
         BeanNameAware, BeanClassLoaderAware, BeanFactoryAware, ApplicationContextAware {
 
-    private String name;
+	private String name;
 
-    private Integer gender;
+	private Integer gender;
 
-    private PersonDao personDao;
+	private PersonDao personDao;
 
-    public Integer queryGenderByName(String name) {
-        return personDao.queryGenderByName(name);
-    }
+	public Integer queryGenderByName(String name) {
+		return personDao.queryGenderByName(name);
+	}
 
-    @Override
-    public void destroy() {
-        System.out.println("destroy方法被执行了！");
-    }
+	public PersonService(String name, Integer gender) {
+		this.name = name;
+		this.gender = gender;
+	}
 
-    @Override
-    public void afterPropertiesSet() {
-        System.out.println("afterPropertiesSet方法被执行了！");
-    }
+	@Override
+	public void destroy() {
+		System.out.println("destroy方法被执行了！");
+	}
+
+	@Override
+	public void afterPropertiesSet() {
+		System.out.println("afterPropertiesSet方法被执行了！");
+	}
 
     @Override
     public void setBeanName(String beanName) throws BeanException {
