@@ -1,5 +1,13 @@
 package minispring;
 
+import minispring.aop.AdvisedSupport;
+import minispring.aop.HealthService;
+import minispring.aop.IHealthService;
+import minispring.aop.PersonServiceInterceptor;
+import minispring.aop.TargetSource;
+import minispring.aop.aspectj.ExpressionPointcut;
+import minispring.aop.framework.CglibAopProxy;
+import minispring.aop.framework.JdkDynamicAopProxy;
 import minispring.bean.NeoPersonService;
 import minispring.bean.PersonDao;
 import minispring.bean.PersonService;
@@ -174,5 +182,35 @@ class FunctionTest {
         Assertions.assertNotNull(applicationContext);
         applicationContext.registerShutdownHook();
         applicationContext.publishEvent(new CustomizedEvent(applicationContext, "你好~"));
+    }
+
+    @Test
+    @DisplayName("aop第一步-散装-JDK")
+    void testStep12() {
+        AdvisedSupport advisedSupport = getAdvisedSupport();
+        JdkDynamicAopProxy aopProxy = new JdkDynamicAopProxy(advisedSupport);
+        IHealthService healthService = (IHealthService) aopProxy.getProxy();
+        Boolean flag = healthService.healthCheck();
+        Assertions.assertTrue(flag);
+    }
+
+    private AdvisedSupport getAdvisedSupport() {
+        ExpressionPointcut expressionPointcut = new ExpressionPointcut("execution(* minispring.aop.IHealthService.*(..))");
+        PersonServiceInterceptor personServiceInterceptor = new PersonServiceInterceptor();
+        AdvisedSupport advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(new HealthService()));
+        advisedSupport.setMethodInterceptor(personServiceInterceptor);
+        advisedSupport.setMethodMatcher(expressionPointcut);
+        return advisedSupport;
+    }
+
+    @Test
+    @DisplayName("aop第二步-散装-CGLIB")
+    void testStep13() {
+        AdvisedSupport advisedSupport = getAdvisedSupport();
+        CglibAopProxy aopProxy = new CglibAopProxy(advisedSupport);
+        IHealthService healthService = (IHealthService) aopProxy.getProxy();
+        Boolean flag = healthService.healthCheck();
+        Assertions.assertTrue(flag);
     }
 }
