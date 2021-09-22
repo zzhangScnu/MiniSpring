@@ -10,6 +10,8 @@ import org.aopalliance.intercept.MethodInterceptor;
 @Data
 public class AdvisedSupport {
 
+	private boolean proxyTargetClass;
+
 	private ClassFilter classFilter;
 
 	private MethodMatcher methodMatcher;

@@ -7,7 +7,7 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author lihua
  * @since 2021/9/18
  */
-public class PersonServiceInterceptor implements MethodInterceptor {
+public class HealthServiceInterceptor implements MethodInterceptor {
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {

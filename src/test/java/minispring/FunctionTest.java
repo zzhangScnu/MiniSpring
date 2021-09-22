@@ -1,11 +1,16 @@
 package minispring;
 
 import minispring.aop.AdvisedSupport;
+import minispring.aop.AopFactory;
+import minispring.aop.HealthMethodBeforeAdvice;
 import minispring.aop.HealthService;
+import minispring.aop.HealthServiceInterceptor;
 import minispring.aop.IHealthService;
-import minispring.aop.PersonServiceInterceptor;
+import minispring.aop.MethodBeforeInterceptor;
+import minispring.aop.Pointcut;
 import minispring.aop.TargetSource;
 import minispring.aop.aspectj.ExpressionPointcut;
+import minispring.aop.aspectj.ExpressionPointcutAdvisor;
 import minispring.aop.framework.CglibAopProxy;
 import minispring.aop.framework.JdkDynamicAopProxy;
 import minispring.bean.NeoPersonService;
@@ -196,7 +201,7 @@ class FunctionTest {
 
     private AdvisedSupport getAdvisedSupport() {
         ExpressionPointcut expressionPointcut = new ExpressionPointcut("execution(* minispring.aop.IHealthService.*(..))");
-        PersonServiceInterceptor personServiceInterceptor = new PersonServiceInterceptor();
+        HealthServiceInterceptor personServiceInterceptor = new HealthServiceInterceptor();
         AdvisedSupport advisedSupport = new AdvisedSupport();
         advisedSupport.setTargetSource(new TargetSource(new HealthService()));
         advisedSupport.setMethodInterceptor(personServiceInterceptor);
@@ -212,5 +217,26 @@ class FunctionTest {
         IHealthService healthService = (IHealthService) aopProxy.getProxy();
         Boolean flag = healthService.healthCheck();
         Assertions.assertTrue(flag);
+    }
+
+    @Test
+    @DisplayName("aop第三步-引入工厂模式")
+    void testStep14() {
+        IHealthService service = new HealthService();
+        HealthMethodBeforeAdvice advice = new HealthMethodBeforeAdvice();
+        String expression = "execution(* minispring.aop.IHealthService.*(..))";
+        ExpressionPointcutAdvisor advisor = new ExpressionPointcutAdvisor(expression, advice);
+        Pointcut pointcut = advisor.getPointcut();
+        if (pointcut.getClassFilter().matches(service.getClass())) {
+            AdvisedSupport advisedSupport = new AdvisedSupport();
+            advisedSupport.setTargetSource(new TargetSource(service));
+            advisedSupport.setMethodInterceptor(new MethodBeforeInterceptor(advice));
+            advisedSupport.setMethodMatcher(pointcut.getMethodMatcher());
+            advisedSupport.setProxyTargetClass(true);
+            AopFactory aopFactory = new AopFactory(advisedSupport);
+            IHealthService proxy = (IHealthService) aopFactory.getProxy();
+            Boolean flag = proxy.healthCheck();
+            Assertions.assertTrue(flag);
+        }
     }
 }
