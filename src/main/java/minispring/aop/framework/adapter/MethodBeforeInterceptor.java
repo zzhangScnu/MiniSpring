@@ -1,6 +1,8 @@
-package minispring.aop;
+package minispring.aop.framework.adapter;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import minispring.aop.MethodBeforeAdvice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -8,10 +10,11 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author lihua
  * @since 2021/9/22
  */
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class MethodBeforeInterceptor implements MethodInterceptor {
 
-	private final MethodBeforeAdvice methodBeforeAdvice;
+	private MethodBeforeAdvice methodBeforeAdvice;
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {

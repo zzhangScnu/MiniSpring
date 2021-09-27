@@ -1,0 +1,16 @@
+<beans>
+    <bean id="healthService" class="minispring.aop.HealthService">
+        <property name="message" value="test success!"/>
+    </bean>
+    <bean id="advice" class="minispring.aop.HealthMethodBeforeAdvice"/>
+    <bean id="interceptor" class="minispring.aop.framework.adapter.MethodBeforeInterceptor">
+        <property name="methodBeforeAdvice" ref="advice"/>
+    </bean>
+    <bean id="advisor" class="minispring.aop.aspectj.ExpressionPointcutAdvisor">
+        <property name="expression" value="execution(* minispring.aop.IHealthService.*(..))"/>
+        <property name="advice" ref="interceptor"/>
+    </bean>
+    <!--  将这个beanPostProcessor注册到容器中  -->
+    <bean id="defaultAdvisorAutoProxyCreator"
+          class="minispring.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+</beans>

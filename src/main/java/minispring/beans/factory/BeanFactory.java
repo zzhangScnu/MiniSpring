@@ -14,4 +14,13 @@ public interface BeanFactory {
      * @return bean
      */
     Object getBean(String name, Object... args);
+
+    /**
+     * 从容器中获取不被代理的bean，每次获取到的都是新的实例
+     *
+     * @param name bean的名字
+     * @param args 构造方法参数
+     * @return bean
+     */
+    Object getBeanPlainly(String name, Object... args);
 }

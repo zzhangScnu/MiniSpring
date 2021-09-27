@@ -13,6 +13,7 @@ import minispring.beans.factory.config.AutowireCapableBeanFactory;
 import minispring.beans.factory.config.BeanDefinition;
 import minispring.beans.factory.config.BeanPostProcessor;
 import minispring.beans.factory.config.BeanReference;
+import minispring.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import minispring.beans.factory.strategy.CglibSubclassingInstantiationStrategy;
 import minispring.beans.factory.strategy.InstantiationStrategy;
 import minispring.util.ReflectionUtils;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author lihua
@@ -35,13 +37,23 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	@Override
 	protected Object createBean(String name, BeanDefinition beanDefinition, Object[] args) {
-		Object bean = createBeanInstance(name, beanDefinition, args);
-		applyPropertyValues(bean, beanDefinition.getPropertyValues());
-		setAware(name, bean);
-		bean = initializeBean(name, bean, beanDefinition);
+		Object bean = postProcessBeforeInstantiation(name, beanDefinition);
+		if (Objects.nonNull(bean)) {
+			// 相当于每次都返回新的对象，不会缓存到容器里
+			return bean;
+		}
+		bean = createBeanPlainly(name, beanDefinition, args);
 		putSingleton(name, bean, beanDefinition);
 		registerDisposableBeanIfNecessary(name, bean, beanDefinition);
 		return bean;
+	}
+
+	@Override
+	protected Object createBeanPlainly(String name, BeanDefinition beanDefinition, Object[] args) {
+		Object bean = createBeanInstance(name, beanDefinition, args);
+		applyPropertyValues(bean, beanDefinition.getPropertyValues());
+		setAware(name, bean);
+		return initializeBean(name, bean, beanDefinition);
 	}
 
 	/**
@@ -172,5 +184,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (bean instanceof BeanFactoryAware) {
 			((BeanFactoryAware) bean).setBeanFactory(this);
 		}
+	}
+
+	private Object postProcessBeforeInstantiation(String name, BeanDefinition beanDefinition) {
+		List<InstantiationAwareBeanPostProcessor> instantiationAwareBeanPostProcessorList = getBeanPostProcessors().stream()
+				.filter(beanPostProcessor -> beanPostProcessor instanceof InstantiationAwareBeanPostProcessor)
+				.map(beanPostProcessor -> (InstantiationAwareBeanPostProcessor) beanPostProcessor)
+				.collect(Collectors.toList());
+		Object bean = null;
+		for (InstantiationAwareBeanPostProcessor beanPostProcessor : instantiationAwareBeanPostProcessorList) {
+			Object beanAfterProcess = beanPostProcessor.postProcessBeforeInstantiation(beanDefinition.getBeanClass(), name);
+			bean = Optional.ofNullable(beanAfterProcess).orElse(bean);
+		}
+		return bean;
 	}
 }

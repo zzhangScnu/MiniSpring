@@ -7,4 +7,6 @@ package minispring.aop;
 public interface IHealthService {
 
 	Boolean healthCheck();
+
+	String getMessage();
 }

@@ -1,16 +1,14 @@
-package minispring.aop;
+package minispring.aop.framework;
 
 import lombok.RequiredArgsConstructor;
-import minispring.aop.framework.AopProxy;
-import minispring.aop.framework.CglibAopProxy;
-import minispring.aop.framework.JdkDynamicAopProxy;
+import minispring.aop.AdvisedSupport;
 
 /**
  * @author lihua
  * @since 2021/9/22
  */
 @RequiredArgsConstructor
-public class AopFactory {
+public class ProxyFactory {
 
 	private final AdvisedSupport advisedSupport;
 

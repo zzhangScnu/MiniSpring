@@ -1,18 +1,18 @@
 package minispring;
 
 import minispring.aop.AdvisedSupport;
-import minispring.aop.AopFactory;
 import minispring.aop.HealthMethodBeforeAdvice;
 import minispring.aop.HealthService;
 import minispring.aop.HealthServiceInterceptor;
 import minispring.aop.IHealthService;
-import minispring.aop.MethodBeforeInterceptor;
 import minispring.aop.Pointcut;
 import minispring.aop.TargetSource;
 import minispring.aop.aspectj.ExpressionPointcut;
 import minispring.aop.aspectj.ExpressionPointcutAdvisor;
 import minispring.aop.framework.CglibAopProxy;
 import minispring.aop.framework.JdkDynamicAopProxy;
+import minispring.aop.framework.ProxyFactory;
+import minispring.aop.framework.adapter.MethodBeforeInterceptor;
 import minispring.bean.NeoPersonService;
 import minispring.bean.PersonDao;
 import minispring.bean.PersonService;
@@ -225,7 +225,9 @@ class FunctionTest {
         IHealthService service = new HealthService();
         HealthMethodBeforeAdvice advice = new HealthMethodBeforeAdvice();
         String expression = "execution(* minispring.aop.IHealthService.*(..))";
-        ExpressionPointcutAdvisor advisor = new ExpressionPointcutAdvisor(expression, advice);
+        ExpressionPointcutAdvisor advisor = new ExpressionPointcutAdvisor();
+        advisor.setExpression(expression);
+        advisor.setAdvice(advice);
         Pointcut pointcut = advisor.getPointcut();
         if (pointcut.getClassFilter().matches(service.getClass())) {
             AdvisedSupport advisedSupport = new AdvisedSupport();
@@ -233,10 +235,24 @@ class FunctionTest {
             advisedSupport.setMethodInterceptor(new MethodBeforeInterceptor(advice));
             advisedSupport.setMethodMatcher(pointcut.getMethodMatcher());
             advisedSupport.setProxyTargetClass(true);
-            AopFactory aopFactory = new AopFactory(advisedSupport);
+            ProxyFactory aopFactory = new ProxyFactory(advisedSupport);
             IHealthService proxy = (IHealthService) aopFactory.getProxy();
             Boolean flag = proxy.healthCheck();
             Assertions.assertTrue(flag);
         }
+    }
+
+    @Test
+    @DisplayName("aop第四步-集成到容器中")
+    void testStep15() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-aop.xml");
+        applicationContext.registerShutdownHook();
+        IHealthService healthService = (IHealthService) applicationContext.getBean("healthService");
+        Assertions.assertNotNull(healthService);
+        Boolean flag = healthService.healthCheck();
+        Assertions.assertTrue(flag);
+        String message = healthService.getMessage();
+        Assertions.assertNotNull(message);
+        System.out.println("注入到类里面的message是：" + message);
     }
 }

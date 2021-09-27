@@ -44,6 +44,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         return getObjectFromFactoryBean(name, (FactoryBean<?>) bean);
     }
 
+    @Override
+    public Object getBeanPlainly(String name, Object... args) {
+        BeanDefinition beanDefinition = getBeanDefinition(name);
+        Object bean = createBeanPlainly(name, beanDefinition, args);
+        return getObjectForBeanInstance(name, bean);
+    }
+
     /**
      * 获取bean定义
      *
@@ -61,6 +68,17 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
      * @return bean
      */
     protected abstract Object createBean(String name, BeanDefinition beanDefinition, Object[] args);
+
+    /**
+     * 在判断目标对象不需要被代理之后，创建一个新的bean
+     * 只有实例化和初始化，不包括对象作用域的处理等
+     *
+     * @param name           bean的名字
+     * @param beanDefinition bean定义
+     * @param args           构造方法的参数
+     * @return bean
+     */
+    protected abstract Object createBeanPlainly(String name, BeanDefinition beanDefinition, Object[] args);
 
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
