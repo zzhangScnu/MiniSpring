@@ -13,6 +13,7 @@ import minispring.aop.framework.CglibAopProxy;
 import minispring.aop.framework.JdkDynamicAopProxy;
 import minispring.aop.framework.ProxyFactory;
 import minispring.aop.framework.adapter.MethodBeforeInterceptor;
+import minispring.autowired.AutowiredPersonDao;
 import minispring.bean.NeoPersonService;
 import minispring.bean.PersonDao;
 import minispring.bean.PersonService;
@@ -254,5 +255,16 @@ class FunctionTest {
         String message = healthService.getMessage();
         Assertions.assertNotNull(message);
         System.out.println("注入到类里面的message是：" + message);
+    }
+
+    @Test
+    @DisplayName("通过注解完成对象注册")
+    void testStep16() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
+        applicationContext.registerShutdownHook();
+        AutowiredPersonDao dao = (AutowiredPersonDao) applicationContext.getBean("autowiredPersonDao");
+        Assertions.assertNotNull(dao);
+        Integer gender = dao.queryGenderByName(PERSON_NAME);
+        Assertions.assertNotNull(gender);
     }
 }

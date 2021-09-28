@@ -1,0 +1,21 @@
+package minispring.stereotype;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * @author lihua
+ * @since 2021/9/28
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Scope {
+
+	/**
+	 * 对象的作用域：singleton / prototype
+	 * 默认单例
+	 */
+	String value() default "singleton";
+}

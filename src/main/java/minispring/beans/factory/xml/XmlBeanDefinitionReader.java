@@ -9,6 +9,7 @@ import minispring.beans.factory.config.BeanDefinition;
 import minispring.beans.factory.config.BeanReference;
 import minispring.beans.factory.support.AbstractBeanDefinitionReader;
 import minispring.beans.factory.support.BeanDefinitionRegistry;
+import minispring.context.annotation.ClassPathBeanDefinitionScanner;
 import minispring.core.io.loader.ResourceLoader;
 import minispring.core.io.resource.Resource;
 import org.w3c.dom.Document;
@@ -44,6 +45,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     private static final String DESTROY_METHOD = "destroy-method";
 
     private static final String SCOPE = "scope";
+
+    private static final String BASE_PACKAGE = "base-package";
+
+    private static final String BEAN_TAG = "bean";
+
+    private static final String COMPONENT_SCAN_TAG = "component-scan";
 
     public XmlBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) {
         super(beanDefinitionRegistry);
@@ -90,7 +97,31 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         if (!(node instanceof Element)) {
             return;
         }
-        Element bean = (Element) node;
+        Element element = (Element) node;
+        doLoadAnnotationBeanDefinitions(element);
+        doLoadXmlConfigBeanDefinition(element);
+    }
+
+    /**
+     * 注册通过注解定义的bean definition
+     */
+    private void doLoadAnnotationBeanDefinitions(Element element) {
+        if (!COMPONENT_SCAN_TAG.equals(element.getTagName())) {
+            return;
+        }
+        String basePackageStr = element.getAttribute(BASE_PACKAGE);
+        String[] packages = basePackageStr.split(",");
+        ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(getBeanDefinitionRegistry());
+        scanner.scanPackages(packages);
+    }
+
+    /**
+     * 注册通过XML配置文件定义的bean definition
+     */
+    private void doLoadXmlConfigBeanDefinition(Element bean) throws ClassNotFoundException {
+        if (!BEAN_TAG.equals(bean.getTagName())) {
+            return;
+        }
         Class<?> beanClass = Class.forName(bean.getAttribute(CLASS));
         String beanName = getBeanName(bean, beanClass);
         PropertyValues propertyValues = assemblePropertyValues(bean);
