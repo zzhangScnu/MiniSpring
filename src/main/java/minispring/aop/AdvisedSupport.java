@@ -5,6 +5,8 @@ import minispring.util.ClassUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 
 /**
+ * AdvisedSupport不需要ClassFilter属性。在生成代理对象的时候就已经判断类是否匹配了
+ *
  * @author lihua
  * @since 2021/9/18
  */
@@ -15,8 +17,6 @@ public class AdvisedSupport {
 	 * 默认是false，即用JDK方式实例化
 	 */
 	private boolean proxyTargetClass;
-
-	private ClassFilter classFilter;
 
 	private MethodMatcher methodMatcher;
 
