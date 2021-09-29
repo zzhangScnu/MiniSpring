@@ -1,6 +1,6 @@
 <beans>
     <bean class="minispring.beans.PropertyPlaceHolderConfigurer">
-        <property name="location" value="config.properties"/>
+        <property name="location" value="classpath:config.properties"/>
     </bean>
     <bean id="autowiredPersonService" class="minispring.autowired.AutowiredPersonService">
         <property name="message" value="${msg}"/>

@@ -6,7 +6,8 @@ import minispring.beans.factory.ConfigurableListableBeanFactory;
 import minispring.beans.factory.config.BeanDefinition;
 import minispring.beans.factory.config.BeanFactoryPostProcessor;
 import minispring.beans.factory.support.DefaultListableBeanFactory;
-import minispring.util.ClassUtils;
+import minispring.core.io.loader.DefaultResourceLoader;
+import minispring.core.io.resource.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,9 +71,10 @@ public class PropertyPlaceHolderConfigurer implements BeanFactoryPostProcessor {
 			throw new BeanException("location param is empty!");
 		}
 		Properties properties = new Properties();
-		ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-		InputStream resourceAsStream = classLoader.getResourceAsStream(location);
+		DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
+		Resource resource = defaultResourceLoader.getResource(location);
 		try {
+			InputStream resourceAsStream = resource.getInputStream();
 			properties.load(resourceAsStream);
 		} catch (IOException e) {
 			throw new BeanException("load properties failed!", e);
