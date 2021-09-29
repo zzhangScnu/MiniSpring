@@ -1,14 +1,14 @@
 package minispring.beans;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 /**
  * @author lihua
  * @since 2021/8/26
  */
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PropertyValue {
 
     private final String name;
@@ -16,5 +16,5 @@ public class PropertyValue {
     /**
      * 普通的值，或是BeanReference
      */
-    private final Object value;
+    private Object value;
 }

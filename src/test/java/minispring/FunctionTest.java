@@ -14,6 +14,7 @@ import minispring.aop.framework.JdkDynamicAopProxy;
 import minispring.aop.framework.ProxyFactory;
 import minispring.aop.framework.adapter.MethodBeforeInterceptor;
 import minispring.autowired.AutowiredPersonDao;
+import minispring.autowired.AutowiredPersonService;
 import minispring.bean.NeoPersonService;
 import minispring.bean.PersonDao;
 import minispring.bean.PersonService;
@@ -266,5 +267,16 @@ class FunctionTest {
         Assertions.assertNotNull(dao);
         Integer gender = dao.queryGenderByName(PERSON_NAME);
         Assertions.assertNotNull(gender);
+    }
+
+    @Test
+    @DisplayName("通过properties配置文件为对象注入属性")
+    void testStep17() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-properties.xml");
+        applicationContext.registerShutdownHook();
+        AutowiredPersonService service = (AutowiredPersonService) applicationContext.getBean("autowiredPersonService");
+        Assertions.assertNotNull(service);
+        String message = service.getMessage();
+        Assertions.assertNotNull(message);
     }
 }
