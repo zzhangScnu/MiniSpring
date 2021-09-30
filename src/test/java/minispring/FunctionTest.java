@@ -274,9 +274,22 @@ class FunctionTest {
     void testStep17() {
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-properties.xml");
         applicationContext.registerShutdownHook();
+        AutowiredPersonDao dao = (AutowiredPersonDao) applicationContext.getBean("autowiredPersonDao");
+        Assertions.assertNotNull(dao);
+        String message = dao.getMessage();
+        Assertions.assertNotNull(message);
+    }
+
+    @Test
+    @DisplayName("通过@Value注解为对象注入属性")
+    void testStep18() {
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-value.xml");
+        applicationContext.registerShutdownHook();
         AutowiredPersonService service = (AutowiredPersonService) applicationContext.getBean("autowiredPersonService");
         Assertions.assertNotNull(service);
-        String message = service.getMessage();
+        String message = service.getMessageOfAnnotation();
         Assertions.assertNotNull(message);
+        Integer gender = service.queryGenderByName(PERSON_NAME);
+        Assertions.assertNotNull(gender);
     }
 }

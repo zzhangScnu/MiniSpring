@@ -2,7 +2,5 @@
     <bean class="minispring.beans.PropertyPlaceHolderConfigurer">
         <property name="location" value="classpath:config.properties"/>
     </bean>
-    <bean id="autowiredPersonDao" class="minispring.autowired.AutowiredPersonDao">
-        <property name="message" value="${msg}"/>
-    </bean>
+    <component-scan base-package="minispring.autowired"/>
 </beans>
