@@ -51,9 +51,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Override
 	protected Object createBeanPlainly(String name, BeanDefinition beanDefinition, Object[] args) {
 		Object bean = createBeanInstance(name, beanDefinition, args);
+		applyBeanPostProcessorsBeforePropertySet(beanDefinition, bean, name);
 		applyPropertyValues(bean, beanDefinition.getPropertyValues());
 		setAware(name, bean);
 		return initializeBean(name, bean, beanDefinition);
+	}
+
+	private void applyBeanPostProcessorsBeforePropertySet(BeanDefinition beanDefinition, Object bean, String name) {
+		PropertyValues propertyValues = beanDefinition.getPropertyValues();
+		List<InstantiationAwareBeanPostProcessor> instantiationAwareBeanPostProcessorList = getInstantiationAwareBeanPostProcessors();
+		for (InstantiationAwareBeanPostProcessor beanPostProcessor : instantiationAwareBeanPostProcessorList) {
+			PropertyValues processedPropertyValues = beanPostProcessor.postProcessPropertyValues(propertyValues, bean, name);
+			propertyValues.getPropertyValueList().addAll(processedPropertyValues.getPropertyValueList());
+		}
+	}
+
+	private List<InstantiationAwareBeanPostProcessor> getInstantiationAwareBeanPostProcessors() {
+		return getBeanPostProcessors().stream()
+				.filter(beanPostProcessor -> beanPostProcessor instanceof InstantiationAwareBeanPostProcessor)
+				.map(beanPostProcessor -> (InstantiationAwareBeanPostProcessor) beanPostProcessor)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -187,10 +204,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	}
 
 	private Object postProcessBeforeInstantiation(String name, BeanDefinition beanDefinition) {
-		List<InstantiationAwareBeanPostProcessor> instantiationAwareBeanPostProcessorList = getBeanPostProcessors().stream()
-				.filter(beanPostProcessor -> beanPostProcessor instanceof InstantiationAwareBeanPostProcessor)
-				.map(beanPostProcessor -> (InstantiationAwareBeanPostProcessor) beanPostProcessor)
-				.collect(Collectors.toList());
+		List<InstantiationAwareBeanPostProcessor> instantiationAwareBeanPostProcessorList = getInstantiationAwareBeanPostProcessors();
 		Object bean = null;
 		for (InstantiationAwareBeanPostProcessor beanPostProcessor : instantiationAwareBeanPostProcessorList) {
 			Object beanAfterProcess = beanPostProcessor.postProcessBeforeInstantiation(beanDefinition.getBeanClass(), name);

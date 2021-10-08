@@ -16,6 +16,14 @@ public interface BeanFactory {
     Object getBean(String name, Object... args);
 
     /**
+     * 根据bean的类型，从容器中获取bean
+     *
+     * @param type bean的类型
+     * @return bean
+     */
+    Object getBean(Class<?> type);
+
+    /**
      * 从容器中获取不被代理的bean，每次获取到的都是新的实例
      *
      * @param name bean的名字

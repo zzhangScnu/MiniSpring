@@ -51,6 +51,18 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 	@Override
+	public Object getBean(Class<?> type) {
+		Map<String, ?> beansOfType = getBeansOfType(type);
+		int beanCount = beansOfType.size();
+		if (beanCount > 1) {
+			throw new BeanException(String.format("%s expected single bean but found %s", type, beanCount));
+		}
+		return beansOfType.values().stream()
+				.findFirst()
+				.orElse(null);
+	}
+
+	@Override
 	public String[] getBeanDefinitionNames() {
 		return beanDefinitionMap.keySet().toArray(new String[0]);
 	}

@@ -58,4 +58,17 @@ public class ClassUtils {
 	public static boolean isCglibProxyClassName(String className) {
 		return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));
 	}
+
+	/**
+	 * 获取对象的真正类对象
+	 * 如果对象是CGLIB代理而来的，则是继承了类的；
+	 * 否则，JDK代理或没有代理的对象，都是实现接口的。
+	 *
+	 * @param object 对象
+	 * @return 类对象
+	 */
+	public static Class<?> getRealClass(Object object) {
+		Class<?> originalClass = object.getClass();
+		return ClassUtils.isCglibProxyClass(originalClass) ? originalClass.getSuperclass() : originalClass;
+	}
 }

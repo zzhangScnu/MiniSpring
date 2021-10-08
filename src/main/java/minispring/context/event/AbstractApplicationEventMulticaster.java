@@ -36,8 +36,7 @@ public abstract class AbstractApplicationEventMulticaster implements Application
 	}
 
 	protected boolean supportsEvent(ApplicationListener<ApplicationEvent> applicationListener, ApplicationEvent event) {
-		Class<?> listenerClass = applicationListener.getClass();
-		Class<?> targetClass = ClassUtils.isCglibProxyClass(listenerClass) ? listenerClass.getSuperclass() : listenerClass;
+		Class<?> targetClass = ClassUtils.getRealClass(applicationListener);
 		// 获取接口上的泛型参数
 		ParameterizedType genericInterface = (ParameterizedType) targetClass.getGenericInterfaces()[0];
 		Type actualTypeArgument = genericInterface.getActualTypeArguments()[0];

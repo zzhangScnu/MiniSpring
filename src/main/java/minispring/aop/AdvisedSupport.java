@@ -28,8 +28,7 @@ public class AdvisedSupport {
 		// 从容器中取出来的对象，是通过JDK或CGLIB实例化的。
 		// 所以，如果是前者，跟目标对象实现了同一个接口，直接getClass就可以了。如果是后者，要getSuperclass一下
 		Object target = targetSource.getTarget();
-		Class<?> originalClass = target.getClass();
-		Class<?> clazz = ClassUtils.isCglibProxyClass(originalClass) ? originalClass.getSuperclass() : originalClass;
+		Class<?> clazz = ClassUtils.getRealClass(target);
 		return clazz.getInterfaces();
 	}
 }

@@ -147,7 +147,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
     private String getBeanName(Element bean, Class<?> beanClass) {
         return Optional.ofNullable(bean.getAttribute(ID))
+                .filter(StrUtil::isNotBlank)
                 .orElse(Optional.ofNullable(bean.getAttribute(NAME))
+                        .filter(StrUtil::isNotBlank)
                         .orElse(StrUtil.lowerFirst(beanClass.getSimpleName())));
     }
 

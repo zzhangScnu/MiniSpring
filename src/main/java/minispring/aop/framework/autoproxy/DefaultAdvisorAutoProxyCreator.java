@@ -7,6 +7,7 @@ import minispring.aop.TargetSource;
 import minispring.aop.aspectj.ExpressionPointcutAdvisor;
 import minispring.aop.framework.ProxyFactory;
 import minispring.beans.BeanException;
+import minispring.beans.PropertyValues;
 import minispring.beans.factory.BeanFactory;
 import minispring.beans.factory.BeanFactoryAware;
 import minispring.beans.factory.config.InstantiationAwareBeanPostProcessor;
@@ -79,5 +80,10 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
 		return bean;
+	}
+
+	@Override
+	public PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean, String beanName) throws BeanException {
+		return pvs;
 	}
 }

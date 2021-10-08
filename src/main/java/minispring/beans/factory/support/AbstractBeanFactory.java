@@ -6,6 +6,7 @@ import minispring.beans.factory.config.BeanDefinition;
 import minispring.beans.factory.config.BeanPostProcessor;
 import minispring.beans.factory.config.ConfigurableBeanFactory;
 import minispring.util.ClassUtils;
+import minispring.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     private final ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+    private final List<StringValueResolver> embeddedStringValueResolvers = new ArrayList<>();
 
     @Override
     public Object getBean(String name, Object... args) {
@@ -83,5 +86,25 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     @Override
     public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
         beanPostProcessors.add(beanPostProcessor);
+    }
+
+    @Override
+    public void addEmbeddedValueResolver(StringValueResolver stringValueResolver) {
+        embeddedStringValueResolvers.add(stringValueResolver);
+    }
+
+    @Override
+    public String resolveEmbeddedValue(String value) {
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        String result = value;
+        for (StringValueResolver stringValueResolver : embeddedStringValueResolvers) {
+            result = stringValueResolver.resolveStringValue(value);
+            if (Objects.isNull(result)) {
+                return null;
+            }
+        }
+        return result;
     }
 }
