@@ -2,6 +2,6 @@
     <bean class="minispring.beans.PropertyPlaceHolderConfigurer">
         <property name="location" value="classpath:config.properties"/>
     </bean>
-    <bean class="minispring.beans.factory.config.AutowiredAnnotationBeanPostProcessor"/>
+    <bean class="minispring.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
     <component-scan base-package="minispring.autowired"/>
 </beans>

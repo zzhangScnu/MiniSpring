@@ -1,9 +1,9 @@
 package minispring.autowired;
 
 import lombok.Data;
-import minispring.stereotype.Autowired;
+import minispring.beans.factory.annotation.Autowired;
+import minispring.beans.factory.annotation.Value;
 import minispring.stereotype.Component;
-import minispring.stereotype.Value;
 
 /**
  * @author lihua

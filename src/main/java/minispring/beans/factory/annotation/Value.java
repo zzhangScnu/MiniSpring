@@ -1,4 +1,4 @@
-package minispring.stereotype;
+package minispring.beans.factory.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

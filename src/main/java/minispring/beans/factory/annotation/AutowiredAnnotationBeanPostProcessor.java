@@ -1,12 +1,11 @@
-package minispring.beans.factory.config;
+package minispring.beans.factory.annotation;
 
 import minispring.beans.BeanException;
 import minispring.beans.PropertyValues;
 import minispring.beans.factory.BeanFactory;
 import minispring.beans.factory.BeanFactoryAware;
 import minispring.beans.factory.ConfigurableListableBeanFactory;
-import minispring.stereotype.Autowired;
-import minispring.stereotype.Value;
+import minispring.beans.factory.config.InstantiationAwareBeanPostProcessor;
 import minispring.util.ClassUtils;
 import minispring.util.ReflectionUtils;
 
