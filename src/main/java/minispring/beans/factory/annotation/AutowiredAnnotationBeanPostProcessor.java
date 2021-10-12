@@ -1,5 +1,7 @@
 package minispring.beans.factory.annotation;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import minispring.beans.BeanException;
 import minispring.beans.PropertyValues;
 import minispring.beans.factory.BeanFactory;
@@ -15,6 +17,8 @@ import java.util.Arrays;
  * @author lihua
  * @since 2021/9/30
  */
+@NoArgsConstructor
+@AllArgsConstructor
 public class AutowiredAnnotationBeanPostProcessor implements InstantiationAwareBeanPostProcessor, BeanFactoryAware {
 
 	private ConfigurableListableBeanFactory beanFactory;

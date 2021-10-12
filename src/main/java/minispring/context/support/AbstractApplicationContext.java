@@ -2,6 +2,7 @@ package minispring.context.support;
 
 import minispring.beans.BeanException;
 import minispring.beans.factory.ConfigurableListableBeanFactory;
+import minispring.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import minispring.beans.factory.config.BeanFactoryPostProcessor;
 import minispring.beans.factory.config.BeanPostProcessor;
 import minispring.context.ApplicationEvent;
@@ -32,7 +33,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		invokeBeanFactoryPostProcessors(beanFactory);
 		registerBeanPostProcessors(beanFactory);
-		addApplicationContextProcessor(beanFactory);
+		addBeanPostProcessor(beanFactory);
 		initApplicationEventMulticaster();
 		registerListeners();
 		beanFactory.preInstantiateSingletons();
@@ -112,8 +113,32 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
 		getBeanFactory().destroySingletons();
 	}
 
-	private void addApplicationContextProcessor(ConfigurableListableBeanFactory beanFactory) {
+	private void addBeanPostProcessor(ConfigurableListableBeanFactory beanFactory) {
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+		addAutowiredAnnotationBeanPostProcessor(beanFactory);
+	}
+
+	/**
+	 * 支持一下注解注入依赖
+	 * <p>
+	 * 在上一个版本中，是需要在XML配置文件里面声明一下AutowiredAnnotationBeanPostProcessor这个bean的，使用起来比较繁琐
+	 * 所以想要在容器启动的时候就自动添加到容器里，实现对用户无感知的效果
+	 * <p>
+	 * 看了Spring的实现方式，是判断beanDefinitionRegistry，里面如果没有AutowiredAnnotationBeanPostProcessor对应的beanDefinition，
+	 * 就会自己生成该beanDefinition并注册，逻辑比较复杂，所以这里简单实现一下
+	 * <p>
+	 * 在刷新容器的时候，就自动把AutowiredAnnotationBeanPostProcessor实例化并添加进来
+	 * 但是如果不经过XML解析和自动化装配的话，直接new出来是不会被注入beanFactory实例的
+	 * 所以又给AutowiredAnnotationBeanPostProcessor增加了有参构造方法，new的时候直接把工厂实例传递进去
+	 */
+	private void addAutowiredAnnotationBeanPostProcessor(ConfigurableListableBeanFactory beanFactory) {
+		String targetName = AutowiredAnnotationBeanPostProcessor.class.getSimpleName();
+		boolean present = getBeansOfType(BeanPostProcessor.class).values().stream()
+				.anyMatch(processor -> processor.getClass().getSimpleName().contains(targetName));
+		// 如果用户已经手动配置在XML文件的话，就不额外处理了
+		if (!present) {
+			beanFactory.addBeanPostProcessor(new AutowiredAnnotationBeanPostProcessor(beanFactory));
+		}
 	}
 
 	/**
